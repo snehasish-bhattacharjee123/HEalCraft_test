@@ -13,11 +13,15 @@ export function Table({ columns, data }) {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
             <tr>
+              {/* ID Column Header */}
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 tracking-wide rounded-tl-lg w-16">
+                ID
+              </th>
               {contentColumns.map((column, colIndex) => (
                 <th
                   key={column.key}
                   className={`px-6 py-4 text-left text-sm font-semibold text-gray-700 tracking-wide 
-                    ${colIndex === 0 ? "rounded-tl-lg" : ""}`}
+                    ${colIndex === 0 ? "" : ""}`}
                 >
                   {column.label}
                 </th>
@@ -27,13 +31,17 @@ export function Table({ columns, data }) {
           <tbody className="bg-white divide-y divide-gray-200">
             {data.map((row, index) => (
               <motion.tr 
-                key={index}
+                key={row.id || index}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.03 }}
                 whileHover={{ backgroundColor: "rgba(249, 250, 251, 1)" }}
                 className="transition-colors duration-150"
               >
+                {/* ID Column Cell - Display actual ID from data */}
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-16">
+                  #{row.id || index + 1}
+                </td>
                 {contentColumns.map((column) => (
                   <td 
                     key={column.key} 
@@ -67,7 +75,7 @@ export function Table({ columns, data }) {
               <tbody className="bg-white divide-y divide-gray-200">
                 {data.map((row, index) => (
                   <motion.tr 
-                    key={index}
+                    key={row.id || index}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2, delay: index * 0.03 }}
