@@ -8,6 +8,7 @@ import { Plus, Search, Edit2, Trash2, Menu } from 'lucide-react';
 import '../styles/scrollbar.css';
 
 function Dashboard() {
+  console.log('[Dashboard] Component initializing');
   const [activeSection, setActiveSection] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,43 +26,51 @@ function Dashboard() {
 
   // Toggle sidebar function
   const toggleSidebar = () => {
+    console.log('[Dashboard] Toggling sidebar, current state:', isSidebarOpen);
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   // Sample data initialization with IDs
   useEffect(() => {
-    console.log("Initializing sample data");
+    console.log("[Dashboard] useEffect - Initializing sample data");
     // Initialize with some sample data if empty
     if (services.length === 0) {
       setServices([]);
+      console.log("[Dashboard] Services initialized");
     }
     
     if (hospitals.length === 0) {
       setHospitals([]);
+      console.log("[Dashboard] Hospitals initialized");
     }
     
     if (departments.length === 0) {
       setDepartments([]);
+      console.log("[Dashboard] Departments initialized");
     }
     
     if (doctors.length === 0) {
       setDoctors([]);
+      console.log("[Dashboard] Doctors initialized");
     }
     
     if (users.length === 0) {
       setUsers([]);
+      console.log("[Dashboard] Users initialized");
     }
     
     if (packages.length === 0) {
       setPackages([]);
+      console.log("[Dashboard] Packages initialized");
     }
     
+    console.log("[Dashboard] Initial active section:", activeSection);
     // No need to set default active section since it's already initialized
   }, []); // Empty dependency array to only run once on mount
 
   const handleEdit = (id) => {
-    console.log('Edit clicked for ID:', id);
-    console.log('Active section:', activeSection);
+    console.log('[Dashboard] Edit clicked for ID:', id);
+    console.log('[Dashboard] Active section:', activeSection);
     
     // Debug log to see all items in the current section
     let allItems;
@@ -90,8 +99,8 @@ function Dashboard() {
     
     // Log all IDs in the current section to help debug
     const allIds = allItems.map(item => item.id);
-    console.log(`All ${activeSection} IDs:`, allIds);
-    console.log(`Looking for ID "${id}" in items with IDs:`, allIds);
+    console.log(`[Dashboard] All ${activeSection} IDs:`, allIds);
+    console.log(`[Dashboard] Looking for ID "${id}" in items with IDs:`, allIds);
     
     let itemToEdit;
     switch (activeSection) {
@@ -119,9 +128,9 @@ function Dashboard() {
     
     // Log result of the search
     if (!itemToEdit) {
-      console.error(`⚠️ Could not find item with ID "${id}" in ${activeSection}`);
+      console.error(`[Dashboard] ⚠️ Could not find item with ID "${id}" in ${activeSection}`);
     } else {
-      console.log('✅ Found item to edit:', itemToEdit);
+      console.log('[Dashboard] ✅ Found item to edit:', itemToEdit);
     }
     
     if (itemToEdit) {
@@ -130,33 +139,62 @@ function Dashboard() {
       setEditingItem(itemCopy);
       setEditMode(true);
       setIsModalOpen(true);
+      console.log('[Dashboard] Setting up edit mode for item:', itemCopy);
     }
   };
 
   const handleDelete = (id) => {
+    console.log('[Dashboard] Delete requested for ID:', id, 'in section:', activeSection);
     if (window.confirm('Are you sure you want to delete this item?')) {
+      console.log('[Dashboard] Delete confirmed for ID:', id);
       switch (activeSection) {
         case 'services':
-          setServices(prev => prev.filter(item => item.id !== id));
+          setServices(prev => {
+            const newServices = prev.filter(item => item.id !== id);
+            console.log('[Dashboard] Updated services after delete:', newServices);
+            return newServices;
+          });
           break;
         case 'hospitals':
-          setHospitals(prev => prev.filter(item => item.id !== id));
+          setHospitals(prev => {
+            const newHospitals = prev.filter(item => item.id !== id);
+            console.log('[Dashboard] Updated hospitals after delete:', newHospitals);
+            return newHospitals;
+          });
           break;
         case 'doctors':
-          setDoctors(prev => prev.filter(item => item.id !== id));
+          setDoctors(prev => {
+            const newDoctors = prev.filter(item => item.id !== id);
+            console.log('[Dashboard] Updated doctors after delete:', newDoctors);
+            return newDoctors;
+          });
           break;
         case 'departments':
-          setDepartments(prev => prev.filter(item => item.id !== id));
+          setDepartments(prev => {
+            const newDepartments = prev.filter(item => item.id !== id);
+            console.log('[Dashboard] Updated departments after delete:', newDepartments);
+            return newDepartments;
+          });
           break;
         case 'users':
-          setUsers(prev => prev.filter(item => item.id !== id));
+          setUsers(prev => {
+            const newUsers = prev.filter(item => item.id !== id);
+            console.log('[Dashboard] Updated users after delete:', newUsers);
+            return newUsers;
+          });
           break;
         case 'packages':
-          setPackages(prev => prev.filter(item => item.id !== id));
+          setPackages(prev => {
+            const newPackages = prev.filter(item => item.id !== id);
+            console.log('[Dashboard] Updated packages after delete:', newPackages);
+            return newPackages;
+          });
           break;
         default:
           return;
       }
+    } else {
+      console.log('[Dashboard] Delete cancelled for ID:', id);
     }
   };
 
@@ -571,6 +609,7 @@ function Dashboard() {
   };
 
   const handleAddNew = () => {
+    console.log('[Dashboard] Add new item clicked for section:', activeSection);
     setEditingItem(null);
     setEditMode(false);
     setIsModalOpen(true);

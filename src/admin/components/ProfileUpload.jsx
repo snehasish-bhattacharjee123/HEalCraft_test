@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload, Check, X } from 'lucide-react';
 
 const ProfileUpload = ({ currentImage, onImageUpdate }) => {
+  console.log('[ProfileUpload] Initializing with currentImage:', currentImage?.substring(0, 30) + '...');
   const [previewImage, setPreviewImage] = useState(currentImage);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -9,48 +10,62 @@ const ProfileUpload = ({ currentImage, onImageUpdate }) => {
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (e) => {
+    console.log('[ProfileUpload] File selection initiated');
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file) {
+      console.log('[ProfileUpload] No file selected');
+      return;
+    }
+
+    console.log('[ProfileUpload] File selected:', file.name, 'type:', file.type, 'size:', (file.size / 1024).toFixed(2) + 'KB');
 
     // Check if file is an image
     if (!file.type.match('image.*')) {
+      console.error('[ProfileUpload] Error: Not an image file');
       setUploadError('Please select an image file');
       return;
     }
 
     // Check file size (limit to 2MB)
     if (file.size > 2 * 1024 * 1024) {
+      console.error('[ProfileUpload] Error: File size exceeds 2MB limit');
       setUploadError('Image size should be less than 2MB');
       return;
     }
 
+    console.log('[ProfileUpload] File validation passed, beginning upload process');
     setIsUploading(true);
     setUploadError(false);
 
     // Create a preview
     const reader = new FileReader();
     reader.onload = (event) => {
+      console.log('[ProfileUpload] Preview image created');
       setPreviewImage(event.target.result);
     };
     reader.readAsDataURL(file);
 
     // Simulate upload process
     setTimeout(() => {
+      console.log('[ProfileUpload] Upload simulation complete');
       setIsUploading(false);
       setUploadSuccess(true);
       
       // Reset success message after 3 seconds
       setTimeout(() => {
+        console.log('[ProfileUpload] Resetting success status');
         setUploadSuccess(false);
       }, 3000);
 
       // In a real application, you would upload the file to a server here
       // For this demo, we'll just pass the file object to the parent component
+      console.log('[ProfileUpload] Updating parent component with new image');
       onImageUpdate(file, URL.createObjectURL(file));
     }, 1500);
   };
 
   const triggerFileInput = () => {
+    console.log('[ProfileUpload] Upload button clicked');
     fileInputRef.current.click();
   };
 
@@ -63,6 +78,8 @@ const ProfileUpload = ({ currentImage, onImageUpdate }) => {
             src={previewImage || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
             alt="Profile"
             className="w-full h-full object-cover"
+            onLoad={() => console.log('[ProfileUpload] Profile image loaded')}
+            onError={() => console.error('[ProfileUpload] Error loading profile image')}
           />
         </div>
 

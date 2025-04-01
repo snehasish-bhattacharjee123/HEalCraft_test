@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Check, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const MultiSelectDropdown = ({ 
-  value = [], 
-  onChange, 
-  options, 
-  label, 
-  required 
+const MultiSelectDropdown = ({
+  value = [],
+  onChange,
+  options,
+  label,
+  required
 }) => {
+  console.log(`[MultiSelectDropdown] Rendering ${label} with ${options.length} options, selected: ${value.length}`);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOption = (optionId) => {
@@ -26,7 +27,11 @@ const MultiSelectDropdown = ({
       <div className="relative">
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            console.log(`[MultiSelectDropdown] Dropdown ${isOpen ? 'closing' : 'opening'}`);
+            setIsOpen(!isOpen);
+          }}
+
           className="w-full flex justify-between items-center px-4 py-3 bg-white border-2 border-gray-300 rounded-lg shadow-sm text-left focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 hover:border-gray-400"
         >
           <span className="truncate">
@@ -67,6 +72,7 @@ const MultiSelectDropdown = ({
                 <button
                   type="button"
                   onClick={(e) => {
+                    console.log(`[MultiSelectDropdown] Removing option tag: ${opt.id}`);
                     e.stopPropagation();
                     toggleOption(opt.id);
                   }}
@@ -100,6 +106,7 @@ const FormField = ({
   options,
   multiple = false,
 }) => {
+  console.log(`[FormField] Rendering field "${name}" of type "${type}" with value:`, value);
   const baseInputClasses = 'mt-1 block w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-gray-700 shadow-md transition-all focus:border-red-500 focus:ring focus:ring-red-300 focus:ring-opacity-50 hover:border-red-400';
   const labelClasses = 'flex text-sm font-medium text-gray-700 mb-1';
 
@@ -120,7 +127,10 @@ const FormField = ({
       <MultiSelectDropdown
         label="Prime Options"
         value={value}
-        onChange={(newValue) => onChange({ target: { name, value: newValue }})}
+        onChange={(newValue) => {
+          console.log(`[FormField] Prime options changed to:`, newValue);
+          onChange({ target: { name, value: newValue } })
+        }}
         options={primeOptions}
         required={required}
       />
@@ -132,7 +142,10 @@ const FormField = ({
       <MultiSelectDropdown
         label="Department Options"
         value={value}
-        onChange={(newValue) => onChange({ target: { name, value: newValue }})}
+        onChange={(newValue) => {
+          console.log(`[FormField] Department options changed to:`, newValue);
+          onChange({ target: { name, value: newValue } })
+        }}
         options={departmentOptions}
         required={required}
       />
@@ -302,26 +315,27 @@ const formConfigs = {
 };
 
 export function DynamicForm({ type, onSubmit, onCancel, initialData }) {
+  console.log(`[DynamicForm] Initializing form of type "${type}" with initialData:`, initialData);
   const [formData, setFormData] = useState(() => {
     // Start with default form config
     const defaultConfig = { ...formConfigs[type] };
-    
+
     // If we have initial data (for editing), merge it properly
     if (initialData) {
       console.log('Initializing form with data:', initialData);
       // Make sure boolean values are properly handled
       const processedData = { ...initialData };
-      
+
       // Ensure checkbox values are properly converted to booleans
       Object.keys(processedData).forEach(key => {
         if (typeof defaultConfig[key] === 'boolean') {
           processedData[key] = Boolean(processedData[key]);
         }
       });
-      
+
       return { ...defaultConfig, ...processedData };
     }
-    
+
     return defaultConfig;
   });
 
@@ -333,7 +347,7 @@ export function DynamicForm({ type, onSubmit, onCancel, initialData }) {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     console.log('Form field changed:', name, type === 'checkbox' ? checked : value);
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -342,10 +356,10 @@ export function DynamicForm({ type, onSubmit, onCancel, initialData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Create a copy of the form data to ensure we're not modifying the state directly
     const submissionData = { ...formData };
-    
+
     // Process any special fields if needed
     // For example, ensure arrays are properly formatted
     Object.keys(submissionData).forEach(key => {
@@ -354,7 +368,7 @@ export function DynamicForm({ type, onSubmit, onCancel, initialData }) {
         submissionData[key] = [];
       }
     });
-    
+
     console.log('Submitting processed form data:', submissionData);
     onSubmit(submissionData);
   };

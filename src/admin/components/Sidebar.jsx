@@ -17,13 +17,15 @@ const menuItems = [
 ];
 
 export function Sidebar({ activeSection, onSectionChange, isOpen, onToggle }) {
+  console.log('[Sidebar] Rendering with activeSection:', activeSection, 'isOpen:', isOpen);
   const [profileImage, setProfileImage] = useState("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80");
 
   const handleImageUpdate = (file, imageUrl) => {
+    console.log('[Sidebar] Updating profile image');
     setProfileImage(imageUrl);
-    console.log('File to be saved:', file.name);
-    console.log('File size:', (file.size / 1024).toFixed(2) + ' KB');
-    console.log('File type:', file.type);
+    console.log('[Sidebar] File to be saved:', file.name);
+    console.log('[Sidebar] File size:', (file.size / 1024).toFixed(2) + ' KB');
+    console.log('[Sidebar] File type:', file.type);
   };
 
   return (
@@ -56,7 +58,10 @@ export function Sidebar({ activeSection, onSectionChange, isOpen, onToggle }) {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onSectionChange(item.id)}
+                    onClick={() => {
+                      console.log('[Sidebar] Menu item clicked:', item.id);
+                      onSectionChange(item.id);
+                    }}
                     className={`flex items-center w-full p-3 rounded-xl transition-all duration-200 group ${
                       isActive
                         ? 'bg-red-700 text-white shadow-lg'
@@ -83,13 +88,22 @@ export function Sidebar({ activeSection, onSectionChange, isOpen, onToggle }) {
         {/* Quick Actions */}
         <div className="p-4 border-t border-red-700/50 flex-shrink-0">
           <div className="flex items-center justify-between mb-4">
-            <button className="p-2 hover:bg-red-700/50 rounded-lg transition-colors">
+            <button 
+              className="p-2 hover:bg-red-700/50 rounded-lg transition-colors"
+              onClick={() => console.log('[Sidebar] Notification button clicked')}
+            >
               <Bell size={20} className="text-red-200" />
             </button>
-            <button className="p-2 hover:bg-red-700/50 rounded-lg transition-colors">
+            <button 
+              className="p-2 hover:bg-red-700/50 rounded-lg transition-colors"
+              onClick={() => console.log('[Sidebar] Settings button clicked')}
+            >
               <Settings size={20} className="text-red-200" />
             </button>
-            <button className="p-2 hover:bg-red-700/50 rounded-lg transition-colors">
+            <button 
+              className="p-2 hover:bg-red-700/50 rounded-lg transition-colors"
+              onClick={() => console.log('[Sidebar] Logout button clicked')}
+            >
               <LogOut size={20} className="text-red-200" />
             </button>
           </div>
